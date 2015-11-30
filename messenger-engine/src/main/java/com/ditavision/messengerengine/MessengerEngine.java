@@ -5,14 +5,15 @@
  */
 package com.ditavision.messengerengine;
 
-import com.ditavision.messengerengine.MessengerEngineException;
 import com.ditavision.messengerengine.mmp.request.MMPAuthentication;
 import com.ditavision.messengerengine.mmp.request.MMPMessage;
+import com.ditavision.messengerengine.mmp.request.MMPMessageId;
 import com.ditavision.messengerengine.mmp.request.MMPRequest;
 import com.ditavision.messengerengine.mmp.request.MMPRecipient;
 import com.ditavision.messengerengine.mmp.request.MMPRegistration;
 import com.ditavision.messengerengine.mmp.response.MMPResponse;
 import com.ditavision.messengerengine.mmp.request.MMPVerification;
+import com.ditavision.messengerengine.mmp.response.MMPStatusReportDetail;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -31,36 +32,36 @@ import javax.ws.rs.core.Response;
  */
 public class MessengerEngine {
     
-    private final static Logger LOGGER = Logger.getLogger(MessengerEngine.class.getName());
+    private Logger LOGGER = Logger.getLogger(MessengerEngine.class.getName());
     
-    Configuration config = new Configuration();
+    Configuration config;
     Client client = ClientBuilder.newBuilder().build();
     private static final String MMP_SUCCESSFUL_RESPONSE_CODE = "100";
 
     public MessengerEngine() {
         client.register(MediaTypeCorrectionResponseFilter.class);
+        config = new Configuration();
     }
     
     public void startRegistration(String mmpUrl, String senderPhoneNbr, String senderEmail) {
-        MMPRequest request = new MMPRequest.Builder().build();
+        MMPRequest request = new MMPRequest();
         request.setRegistration(new MMPRegistration(senderPhoneNbr, senderEmail));
         sendToMMP(mmpUrl, request);
     }
     
     public String verifyRegistration(String mmpUrl, String senderPhoneNbr, String pinCode) {
-        MMPRequest request = new MMPRequest.Builder().build();
+        MMPRequest request = new MMPRequest();
         request.setVerification(new MMPVerification(senderPhoneNbr, pinCode));
         MMPResponse response = sendToMMP(mmpUrl, request);
-        //TODO: sms those details to the user, save them somewhere, or ...
         return response.getPassword();
     }
     
-    public void sendMessage(String message, List<String> recipients) {
-        sendMessage(config.getUrl(), config.getMsisdn(), config.getPassword(), message, recipients);
+    public String sendMessage(String message, List<String> recipients) {
+        return sendMessage(config.getUrl(), config.getMsisdn(), config.getPassword(), message, recipients);
     }
     
-    public void sendMessage(String mmpUrl, String senderPhoneNbr, String password, String message, List<String> recipients) {
-        MMPRequest request = new MMPRequest.Builder().build();
+    public String sendMessage(String mmpUrl, String senderPhoneNbr, String password, String message, List<String> recipients) {
+        MMPRequest request = new MMPRequest();
         MMPAuthentication auth = new MMPAuthentication(senderPhoneNbr, password);
         List<MMPRecipient> toList = Optional.ofNullable(recipients).orElse(new ArrayList<>()).
                 stream().
@@ -69,17 +70,34 @@ public class MessengerEngine {
         MMPMessage text = new MMPMessage(message, toList);
         request.setAuthentication(auth);
         request.setMessage(text);
-        sendToMMP(mmpUrl, request);
+        MMPResponse sendToMMP = sendToMMP(mmpUrl, request);
+        return sendToMMP.getMessageId();
+    }
+    
+    public List<MMPStatusReportDetail> statusReports(List<String> messageIds) {
+        return statusReports(config.getUrl(), config.getMsisdn(), config.getPassword(), messageIds);
+    }
+    
+    public List<MMPStatusReportDetail> statusReports(String mmpUrl, String senderPhoneNbr, String password, List<String> messageIds) {
+        MMPRequest request = new MMPRequest();
+        MMPAuthentication auth = new MMPAuthentication(senderPhoneNbr, password);
+        List<MMPMessageId> messageIdList = Optional.ofNullable(messageIds).orElse(new ArrayList<>()).
+                stream().
+                map(s -> new MMPMessageId(s)).
+                collect(Collectors.toList());
+        request.setAuthentication(auth);
+        request.setMessageIds(messageIdList);
+        MMPResponse sendToMMP = sendToMMP(mmpUrl, request);
+        return sendToMMP.getStatusReports();
     }
     
     protected MMPResponse sendToMMP(String url, MMPRequest payload) {
-        LOGGER.log(Level.INFO, "request payload: {0}", payload);
+        LOGGER.log(Level.FINE, "request payload: {0}", payload);
         Response response = client.target(url).
-                request().
-                accept(MediaType.APPLICATION_XML_TYPE).
+                request(MediaType.APPLICATION_XML_TYPE).
                 post(Entity.xml(payload));
         MMPResponse result = verifyAndReadResponse(response);
-        LOGGER.log(Level.INFO, "response payload: {0}", result);
+        LOGGER.log(Level.FINE, "response payload: {0}", result);
         return result;
         
     }

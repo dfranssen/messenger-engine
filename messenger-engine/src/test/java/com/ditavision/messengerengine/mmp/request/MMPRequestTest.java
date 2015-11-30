@@ -5,12 +5,6 @@
  */
 package com.ditavision.messengerengine.mmp.request;
 
-import com.ditavision.messengerengine.mmp.request.MMPRecipient;
-import com.ditavision.messengerengine.mmp.request.MMPRegistration;
-import com.ditavision.messengerengine.mmp.request.MMPVerification;
-import com.ditavision.messengerengine.mmp.request.MMPRequest;
-import com.ditavision.messengerengine.mmp.request.MMPMessage;
-import com.ditavision.messengerengine.mmp.request.MMPAuthentication;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.util.ArrayList;
@@ -32,7 +26,7 @@ public class MMPRequestTest {
 
     @Before
     public void init() throws JAXBException {
-        this.cut = new MMPRequest.Builder().timezone("UTC+2").build();
+        this.cut = new MMPRequest("UTC+2");
         this.context = JAXBContext.newInstance(MMPRequest.class);
     }
     
@@ -86,5 +80,17 @@ public class MMPRequestTest {
         cut.setMessage(new MMPMessage("test message", recipients));
         context.createMarshaller().marshal(cut, writer);
         assertEquals("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?><cp version=\"3.0\" locale=\"nl_BE\" timezone=\"UTC+2\" clientVersion=\"1.1\" clientProduct=\"eapi\"><authentication><username>user</username><password>pwd</password></authentication><sendMessage><message type=\"SMS\" originatorType=\"replytophone\"><text>test message</text><recipients><recipient type=\"to\" addressType=\"msisdn\">32495xxxxx2</recipient><recipient type=\"to\" addressType=\"msisdn\">32495xxxxx3</recipient></recipients></message></sendMessage></cp>", writer.toString());
+    }
+    
+    @Test
+    public void testSerializeAuthenticationAndStatusReports() throws JAXBException {
+        Writer writer = new StringWriter();
+        cut.setAuthentication(new MMPAuthentication("user", "pwd"));
+        List<MMPMessageId> ids = new ArrayList();
+        ids.add(new MMPMessageId("27066"));
+        ids.add(new MMPMessageId("3485"));
+        cut.setMessageIds(ids);
+        context.createMarshaller().marshal(cut, writer);
+        assertEquals("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?><cp version=\"3.0\" locale=\"nl_BE\" timezone=\"UTC+2\" clientVersion=\"1.1\" clientProduct=\"eapi\"><authentication><username>user</username><password>pwd</password></authentication><statusReport><message messageId=\"27066\"/><message messageId=\"3485\"/></statusReport></cp>", writer.toString());
     }
 }

@@ -24,11 +24,11 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class MMPRequest {
     
-    @XmlAttribute private String version = "3.0";
-    @XmlAttribute private String locale = "nl_BE";
-    @XmlAttribute private String timezone = getCurrentTimezone();
-    @XmlAttribute private String clientVersion = "1.1";
-    @XmlAttribute private String clientProduct = "eapi";
+    @XmlAttribute private final String version = "3.0";
+    @XmlAttribute private final String locale = "nl_BE";
+    @XmlAttribute private final String timezone;
+    @XmlAttribute private final String clientVersion = "1.1";
+    @XmlAttribute private final String clientProduct = "eapi";
     
     @XmlElement(name = "startRegistration")
     private MMPRegistration registration;
@@ -41,20 +41,41 @@ public class MMPRequest {
     @XmlElementWrapper(name = "sendMessage")
     @XmlElement(name = "message")
     private List<MMPMessage> messages;
+    
+    @XmlElementWrapper(name = "statusReport")
+    @XmlElement(name = "message")
+    private List<MMPMessageId> messageIds;
 
-    private MMPRequest() {
+    public MMPRequest() {
+        timezone = getCurrentTimezone();
     }
-
+    
+    public MMPRequest(String timezone) {
+        this.timezone = timezone;
+    }
+    
     public void setRegistration(MMPRegistration registration) {
         this.registration = registration;
     }
 
+    public MMPRegistration getRegistration() {
+        return registration;
+    }
+    
     public void setVerification(MMPVerification verification) {
         this.verification = verification;
     }
 
+    public MMPVerification getVerification() {
+        return verification;
+    }
+
     public void setAuthentication(MMPAuthentication authentication) {
         this.authentication = authentication;
+    }
+
+    public MMPAuthentication getAuthentication() {
+        return authentication;
     }
     
     public void setMessage(MMPMessage message) {
@@ -63,11 +84,27 @@ public class MMPRequest {
         messages.add(message);
     }
 
-    @Override
-    public String toString() {
-        return "MMPRequest{" + "version=" + version + ", locale=" + locale + ", timezone=" + timezone + ", clientVersion=" + clientVersion + ", clientProduct=" + clientProduct + ", registration=" + registration + ", verification=" + verification + ", authentication=" + authentication + ", messages=" + messages + '}';
+    public MMPMessage getMessage() {
+        return (this.messages == null || this.messages.isEmpty()) ? null : this.messages.get(0);
     }
     
+    public List<MMPMessageId> getMessageIds() {
+        return messageIds;
+    }
+
+    public void setMessageIds(List<MMPMessageId> messageIds) {
+        this.messageIds = messageIds;
+    }
+    
+    public String getTimezone() {
+        return this.timezone;
+    }
+
+    @Override
+    public String toString() {
+        return "MMPRequest{" + "version=" + version + ", locale=" + locale + ", timezone=" + timezone + ", clientVersion=" + clientVersion + ", clientProduct=" + clientProduct + ", registration=" + registration + ", verification=" + verification + ", authentication=" + authentication + ", messages=" + messages + ", messageIds=" + messageIds + '}';
+    }
+
     protected String getCurrentTimezone() {
         String offset = ZonedDateTime.now().getOffset().getId();
         String result = "UTC";
@@ -76,43 +113,5 @@ public class MMPRequest {
             result += offset.substring(2, 3);
         }
         return result;
-    }
-    
-    public static class Builder {
-
-        private final MMPRequest cp;
-
-        public Builder() {
-            this.cp = new MMPRequest();
-        }
-
-        public Builder version(String version) {
-            this.cp.version = version;
-            return this;
-        }
-        
-        public Builder locale(String locale) {
-            this.cp.locale = locale;
-            return this;
-        }
-        
-        public Builder timezone(String timezone) {
-            this.cp.timezone = timezone;
-            return this;
-        }
-        
-        public Builder clientVersion(String clientVersion) {
-            this.cp.clientVersion = clientVersion;
-            return this;
-        }
-        
-        public Builder clientProduct(String clientProduct) {
-            this.cp.clientProduct = clientProduct;
-            return this;
-        }
-        
-        public MMPRequest build() {
-            return this.cp;
-        }
     }
 }
