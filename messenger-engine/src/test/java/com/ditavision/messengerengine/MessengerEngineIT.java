@@ -5,9 +5,6 @@
  */
 package com.ditavision.messengerengine;
 
-import com.ditavision.messengerengine.MessengerEngine;
-import com.ditavision.messengerengine.Configuration;
-import com.ditavision.messengerengine.MessengerEngineException;
 import org.junit.Test;
 import org.junit.Before;
 

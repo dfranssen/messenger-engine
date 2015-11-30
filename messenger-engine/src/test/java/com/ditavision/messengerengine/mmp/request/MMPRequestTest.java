@@ -36,7 +36,6 @@ public class MMPRequestTest {
         assertNotNull(actual);
         //As we do not know in which timezone the code will be executed
         assertTrue(actual.startsWith("UTC"));
-        System.out.println(actual);
     }
     
     @Test
