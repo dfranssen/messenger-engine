@@ -3,7 +3,7 @@
     <groupId>com.ditavision</groupId>
     <artifactId>messenger-engine</artifactId>
     <name>messenger-engine</name>
-    <version>0.0.2-SNAPSHOT</version>
+    <version>0.0.2</version>
     <description>Messenger toolkit for sending messages (currently only SMS)</description>
     <url>http://ditavision.com</url>
     <organization>
@@ -74,7 +74,7 @@
         <connection>scm:git:git@github.com:dfranssen/messenger-engine.git</connection>
         <url>https://github.com/dfranssen/messenger-engine</url>
         <developerConnection>scm:git:git@github.com:dfranssen/messenger-engine.git</developerConnection>
-        <tag>HEAD</tag>
+        <tag>v0.0.2</tag>
   </scm>
     <build>
         <plugins>
