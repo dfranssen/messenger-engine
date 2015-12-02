@@ -74,7 +74,6 @@
         <connection>scm:git:git@github.com:dfranssen/messenger-engine.git</connection>
         <url>https://github.com/dfranssen/messenger-engine</url>
         <developerConnection>scm:git:git@github.com:dfranssen/messenger-engine.git</developerConnection>
-        <tag>v0.0.1</tag>
     </scm>
     <build>
         <plugins>
@@ -87,6 +86,7 @@
                     <useReleaseProfile>false</useReleaseProfile>
                     <releaseProfiles>release</releaseProfiles>
                     <goals>deploy</goals>
+                    <tagNameFormat>v@{project.version}</tagNameFormat>
                 </configuration>
             </plugin>
         </plugins>
