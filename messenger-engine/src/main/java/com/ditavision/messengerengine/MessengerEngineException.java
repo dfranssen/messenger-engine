@@ -17,7 +17,7 @@
 package com.ditavision.messengerengine;
 
 /**
- * Exception occurred when interacting with the {@link MessageEngine} containing the received error code from the MMP server.
+ * Exception occurred when interacting with the {@link MessengerEngine} containing the received error code from the MMP server.
  * 
  * @author Dirk Franssen
  */
