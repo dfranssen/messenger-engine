@@ -4,6 +4,8 @@
             <actionName>CUSTOM-Run Integration Tests</actionName>
             <displayName>Run Integration Tests</displayName>
             <goals>
+                <goal>clean:clean</goal>
+                <goal>test-compile</goal>
                 <goal>failsafe:integration-test</goal>
             </goals>
         </action>
@@ -18,4 +20,4 @@
                 <goal>clover2:clover</goal>
             </goals>
         </action>
-    </actions>
+</actions>
