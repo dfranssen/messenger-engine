@@ -1,9 +1,35 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.sonatype.oss</groupId>
+        <artifactId>oss-parent</artifactId>
+        <version>9</version>
+    </parent>
     <groupId>com.ditavision</groupId>
     <artifactId>messenger-engine</artifactId>
     <version>0.0.1-SNAPSHOT</version>
+    <description>Messenger toolkit for sending messages (currently only SMS)</description>
+    <url>http://ditavision.com</url>
+    <organization>
+        <name>DitaVision</name>
+        <url>http://ditavision.com</url>
+    </organization>
+    <inceptionYear>2015</inceptionYear>
+    <licenses>
+        <license>
+            <name>The Apache Software License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+    <developers>
+        <developer>
+            <name>Dirk Franssen</name>
+            <organization>ditavision.com</organization>
+            <organizationUrl>http://ditavision.com</organizationUrl>
+        </developer>
+    </developers>
     <packaging>jar</packaging>
     <dependencies>
         <dependency>
@@ -49,9 +75,15 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
-    <build>
-        <finalName>messenger-engine</finalName>
+    <build>    
+        
     </build>
+    <scm>
+        <connection>scm:git:git@github.com:dfranssen/messenger-engine.git</connection>
+        <url>https://github.com/dfranssen/messenger-engine</url>
+        <developerConnection>scm:git:git@github.com:dfranssen/messenger-engine.git</developerConnection>
+        <tag>v0.0.1</tag>
+    </scm>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
