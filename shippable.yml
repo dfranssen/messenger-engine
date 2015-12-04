@@ -19,6 +19,6 @@ script:
     - mvn test 
     
 after_script:
-    - mvn clean:clean clover2:setup test clover2:aggregate clover2:clover
     - mv target/surefire-reports/*.xml ../shippable/testresults
+    - mvn clean:clean clover2:setup test clover2:aggregate clover2:clover
     - mv target/site/clover/clover.xml ../shippable/codecoverage
