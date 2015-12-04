@@ -4,9 +4,17 @@ language: java
 # jdk tag
 jdk:
     - oraclejdk8
+    
+env:
+    - secure: FFEHIMw5P+FfPX9RotcvY9+sxfJKQ4Y+TvWnhk+SZHLY9KK7dBg058BLgBFDwGXVLbjhhcpTYyXmF7bQtx5UbEcnSrgAAEKXv+qaX8t6ImJuaS00L5LRvuBWtK7CNjAYCGhFRZ3/NOQj37gVrFFImKIcy8rsEb1Acx8TLv58zMIsrUsNfDkIClD7ejsg67sWUbD60fChCooImqrhEMuzsH9VW/OXcvQvrerR65Gs+ib0OYiikp9jGtLCeFFlXNecEtwVRYcGihHH4Jj2TnYSm7X0sfXP71KEAvLXG/k/duF3yKci3huORGgqI0eaP/nYuvyIgiyAjVuqysbCTwX+7SWgoAdsReev3X8EwvzQBHGRIXmE9045aa5RAqqBokQJCsOrNn3rKKditphoHvKEsO4WDs/1wGpWNQqbyNx2ODoy1hRRSTIBWlL1RaKzmsA8+Czlk/LXVRvzaP3oC8SBG+5wLKMXZaek31bbo5CdWQjiwkDivje0LkIEc/G9ttqJmS8ypSrdS7LXnl8ujERebpsUnfIkXEoC+rONQgGekeULaeioUJcgZWrO4Z+AltaMtjTHZ4m/O3O67hdNeljgXZJsG9dNBsuSFEpwiTkhgEhxuG8KItPB6sNK+3t6kTB5mODGWlyLoQQQgi7PK6pkc4tFOmem0xF0qxvFEgJc81M=
 
 before_install:
     - cd messenger-engine
+    - echo $MY_CLOVER_LICENSE_LINE1 > clover.license
+    - echo $MY_CLOVER_LICENSE_LINE2 >> clover.license
+    - echo $MY_CLOVER_LICENSE_LINE3 >> clover.license
+    - echo $MY_CLOVER_LICENSE_LINE4 >> clover.license
+    - echo $MY_CLOVER_LICENSE_LINE5 >> clover.license
 
 install:
     - mvn clean install -DskipTests=true
@@ -20,5 +28,5 @@ script:
     
 after_script:
     - mv target/surefire-reports/*.xml ../shippable/testresults
-    - mvn clean:clean clover2:setup test clover2:aggregate clover2:clover
+    - mvn clean:clean clover2:setup test clover2:aggregate clover2:clover -Dmaven.clover.licenseLocation=clover.license
     - mv target/site/clover/clover.xml ../shippable/codecoverage
