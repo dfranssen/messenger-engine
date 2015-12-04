@@ -1,0 +1,24 @@
+# language setting
+language: java
+
+# jdk tag
+jdk:
+    - oraclejdk8
+
+before_install:
+    - cd messenger-engine
+
+install:
+    - mvn clean install -DskipTests=true
+
+before_script: 
+    - mkdir -p ../shippable/testresults
+    - mkdir -p ../shippable/codecoverage
+    
+script:
+    - mvn test 
+    
+after_script:
+    - mvn clean:clean clover2:setup test clover2:aggregate clover2:clover
+    - mv target/surefire-reports/*.xml ../shippable/testresults
+    - mv target/site/clover/clover.xml ../shippable/codecoverage
