@@ -28,5 +28,5 @@ script:
     
 after_script:
     - mv target/surefire-reports/*.xml ../shippable/testresults
-    - mvn clean:clean clover2:setup test clover2:aggregate clover2:clover -Dmaven.clover.licenseLocation=clover.license
+    - mvn clean:clean clover2:setup test clover2:aggregate clover2:clover -Dmaven.clover.licenseLocation=/home/shippable/workspace/src/github.com/dfranssen/messenger-engine/messenger-engine/clover.license
     - mv target/site/clover/clover.xml ../shippable/codecoverage
